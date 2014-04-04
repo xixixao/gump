@@ -1,6 +1,6 @@
 # Gump
 
-Gump is the task runner that keeps on running. It watches your files and if you're working on an app, serves and live reloads them automatically, giving you notifications. It's like Brunch or Mimosa - while keeping **you** in full control.
+Gump is the task runner that keeps on running. It watches your files and if you're working on a client-side app, serves and live reloads them automatically, giving you notifications. It's like Brunch or Mimosa - while keeping **you** in full control.
 
 ```coffee
 {task, watch, serve} = require 'gump'
@@ -38,9 +38,9 @@ Yes, it's just a nice wrapper for [gulp](http://gulpjs.com/).
 
 ## More examples
 
-Full-fledged example, ready to run:
+Full-fledged examples, ready to run:
 
-- [CoffeeScript library]
+- [pure CoffeeScript library]
 - [CS, Jade, Stylus using Browserify and Bower]
 - [CS, Jade, Stylus using RequireJS and Bower]
 
@@ -48,7 +48,7 @@ Piece these together to make up your build:
 
 ---
 
-`serve` uses `browser-sync`, just give it the top directory of your app.
+`serve` uses `browser-sync`, just give it the top directory of your app and it will open a browser window with the app running.
 
 ```coffee
 task 'default', ['js', 'css'], ->
@@ -81,7 +81,7 @@ watch 'js',
   no
 ```
 
-You should probably use RequireJS, but if you want *Browserify*, we need to have intermediate files. *Browserify* combines them for us and we tell watch to reload the browser only when the whole bundle is finished compiling.
+You should probably use RequireJS, but if you want *Browserify*, we need to have intermediate files. *Browserify* combines them for us and we tell `watch` to reload the browser only when the whole bundle is finished compiling.
 
 ```coffee
 watch 'browserify',
@@ -123,5 +123,7 @@ task 'clean',
   -> rm read: false
   ''
 ```
+
+See the [gulp documentation] for more details on its API.
 
 Special thanks to @lachenmayer for the initial syntax idea.
