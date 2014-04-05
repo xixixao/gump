@@ -21,7 +21,7 @@ pipe = (stream, pipes, dest) ->
   stream
 
 exports.task = (name, src, pipes..., dest) ->
-  if typeof dest is 'string'
+  if dest? and typeof dest is 'string'
     gulp.task name, ->
       pipe source(src), pipes, dest
   else

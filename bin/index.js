@@ -43,7 +43,7 @@
   exports.task = function() {
     var dest, name, pipes, src, _i;
     name = arguments[0], src = arguments[1], pipes = 4 <= arguments.length ? __slice.call(arguments, 2, _i = arguments.length - 1) : (_i = 2, []), dest = arguments[_i++];
-    if (typeof dest === 'string') {
+    if ((dest != null) && typeof dest === 'string') {
       return gulp.task(name, function() {
         return pipe(source(src), pipes, dest);
       });
