@@ -19,19 +19,16 @@ watch 'js',
   'src/js/**/*.coffee'
   -> coffee()
   'bin/js'
-  '**/*.js'
 
 watch 'css',
   'src/css/**/*.styl'
   -> stylus()
   'bin/css'
-  '**/*.css'
 
 watch 'templates',
   'src/**/*.jade'
   -> jade()
   'bin'
-  '**/*.html'
 ```
 
 Yes, it's just a nice wrapper for [gulp](http://gulpjs.com/).
@@ -57,38 +54,32 @@ task 'default', ['js', 'css'], ->
 
 ---
 
-`watch` needs as a last argument the *glob* to match files in the destination directory which should trigger live reload. There is no way to guess this from the rest of the arguments. Here we convert *CommonJS* syntax CoffeeScript files to *RequireJS* ready modules.
-
+Whenever you change a sourcefile, `watch` will run the given pipeline only on that file. If that file ends up in the served directory the browser will auto reload (or just update in case of images and CSS).
 ```coffee
 watch 'js',
   'src/js/**/*.coffee'
-  -> coffee bare: true
-  -> commonJsToRequireJs()
+  -> coffee()
   'bin/js'
-  '**/*.js'
 ```
-
 
 ---
 
-If you don't want to reload the web page when a file is changed, use `no` instead of a *glob*.
+If you don't want to reload the web page when a file is changed, output it outside the served directory.
 
 ```coffee
 watch 'js',
   'src/js/**/*.coffee'
   -> coffee()
   'build/js'
-  no
 ```
 
-You should probably use RequireJS, but if you want *Browserify*, we need to have intermediate files. *Browserify* combines them for us and we tell `watch` to reload the browser only when the whole bundle is finished compiling.
+This is useful when you need intermediate files. For example, [Browserify] combines Javascript into a single file (I recommend using [RequireJS] instead), so we tell `watch` to reload the browser only when the whole bundle is finished compiling.
 
 ```coffee
 watch 'browserify',
   'build/js/app.js'
   -> browserify()
   'bin/js/'
-  'app.js'
 ```
 
 ---
@@ -99,17 +90,15 @@ By ommitting any gulp plugins you can simply copy files from one location to ano
 watch 'lib',
   'src/js/lib/**/*.js'
   'bin/js/lib'
-  '**/*.js'
 ```
 
 ---
 
-If you don't need to watch the sources, just use a `task`. Notice here that plugin sources work as well. We use `flatten` to get rid of bower package paths and get a simple list of script files.
+If you don't need to watch the sources, just use a `task`. Notice here that plugin sources work as well.
 
 ```coffee
 task 'bower',
   -> bower()
-  -> flatten()
   'bin/js/lib'
 ```
 
