@@ -3,11 +3,14 @@ path = require 'path'
 gulp = require 'gulp'
 cache = require 'gulp-cached'
 notify = require 'gulp-notify'
+filter = require 'gulp-filter'
 
+once = require 'once'
+subdir = require 'subdir'
 browserSync = require 'browser-sync'
 
 watchedTasks = {}
-destinations = []
+serving = undefined
 
 source = (src) ->
   switch typeof src
@@ -27,19 +30,34 @@ exports.task = (name, src, pipes..., dest) ->
   else
     gulp.task name, src, dest
 
-exports.watch = (name, src, pipes..., dest, files) ->
+autoWatch = ->
+  gulp.once 'start', ->
+    for task, filePath of watchedTasks
+      gulp.watch filePath, [task]
+
+shouldServe = (file) ->
+  subdir serving.dir, file.path if serving?
+
+livereload = (file) ->
+  serving.instance.changeFile file.path,
+    injectFileTypes: ['css', 'png', 'jpg', 'jpeg', 'svg', 'gif', 'webp']
+  true
+
+exports.watch = (name, src, pipes..., dest) ->
   watchedTasks[name] = src
-  destinations.push path.join dest, files if files
+  do once autoWatch
   gulp.task name, ->
     stream = source src
       .pipe cache name
-    stream = pipe stream, pipes, dest
-    stream.pipe notify 'Compiled <%= file.relative %>' if files
+    pipe stream, pipes, dest
+    .pipe filter shouldServe
+    .pipe notify 'Compiled <%= file.relative %>'
+    .pipe filter livereload
 
 exports.serve = (baseDir = './') ->
-  browserSync.init destinations,
-    server: {baseDir}
-    notify: false
-  for task, path of watchedTasks
-    gulp.watch path, [task]
+  serving =
+    dir: baseDir
+    instance: browserSync.init [],
+      server: {baseDir}
+      notify: false
 
