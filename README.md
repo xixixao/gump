@@ -65,8 +65,6 @@ watch 'js',
   'bin/js'
 ```
 
----
-
 If you don't want to reload the web page when a file is changed, output it outside the served directory.
 
 ```coffee
@@ -76,7 +74,7 @@ watch 'js',
   'build/js'
 ```
 
-This is useful when you need intermediate files. For example, [Browserify] combines Javascript into a single file (I recommend using [RequireJS] instead), so `watch` will reload the browser only when the whole bundle is finished compiling.
+This is useful when you need intermediate files. For example, [Browserify](http://browserify.org/) combines Javascript into a single file (I recommend using [RequireJS](http://requirejs.org/) instead), so `watch` will reload the browser only when the whole bundle is finished compiling.
 
 ```coffee
 watch 'browserify',
