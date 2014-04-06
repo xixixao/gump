@@ -33,7 +33,7 @@ watch 'templates',
 
 Yes, it's just a nice wrapper for [gulp](http://gulpjs.com/).
 
-## More examples
+## Examples
 
 Full-fledged examples, ready to run:
 
@@ -41,7 +41,10 @@ Full-fledged examples, ready to run:
 - [CS, Jade, Stylus using Browserify and Bower]
 - [CS, Jade, Stylus using RequireJS and Bower]
 
-Piece these together to make up your build:
+
+## Documentation
+
+Piece these together to make up your build.
 
 ### Serving
 
@@ -92,7 +95,7 @@ watch 'lib',
   'bin/js/lib'
 ```
 
-# Plain Task
+### Plain Task
 
 If you don't need to watch the sources, just use a `task`. Notice here that plugin sources work as well.
 
@@ -102,7 +105,7 @@ task 'bower',
   'bin/js/lib'
 ```
 
-# No Output
+### No Output
 
 If you don't want to pipe the transformed files anywhere, include an empty string as the last argument to `task` (otherwise **Gump** couldn't tell between callback style and succint style call).
 
