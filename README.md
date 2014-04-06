@@ -1,6 +1,6 @@
 # Gump
 
-Gump is the task runner that keeps on running. It watches your files and if you're working on a client-side app, serves and live reloads them automatically, giving you notifications. It's like Brunch or Mimosa - while keeping **you** in full control.
+Gump is the task runner that keeps on running. It watches your files and if you're working on a client-side app, serves and live reloads them automatically, giving you notifications. It's like [Brunch](http://http://brunch.io/) or [Mimosa](http://http://mimosa.io/) - while keeping **you** in full control.
 
 ```coffee
 {task, watch, serve} = require 'gump'
@@ -104,7 +104,7 @@ task 'bower',
 
 ---
 
-If you don't have a destination, include an empty string as the last argument to task (otherwise **Gump** couldn't tell between callback style and succint style call).
+If you don't want to pipe the transformed files anywhere, include an empty string as the last argument to `task` (otherwise **Gump** couldn't tell between callback style and succint style call).
 
 ```coffee
 task 'clean',
@@ -113,6 +113,6 @@ task 'clean',
   ''
 ```
 
-See the [gulp documentation] for more details on its API.
+See the [gulp documentation](https://github.com/gulpjs/gulp) for more details on its API.
 
 Special thanks to @lachenmayer for the initial syntax idea.
