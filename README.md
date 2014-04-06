@@ -43,7 +43,7 @@ Full-fledged examples, ready to run:
 
 Piece these together to make up your build:
 
----
+### Serving
 
 `serve` uses `browser-sync`, just give it the top directory of your app and it will open a browser window with the app running.
 
@@ -52,9 +52,9 @@ task 'default', ['js', 'css'], ->
   serve 'bin'
 ```
 
----
+### Watching and Live Reload
 
-Whenever you change a sourcefile, `watch` will run the given pipeline only on that file. If that file ends up in the served directory the browser will auto reload (or just update in case of images and CSS).
+Whenever you change a sourcefile, `watch` will run the given pipeline only on that file. If you're using `serve` and that file ends up in the served directory the browser will auto reload (or just update in case of images and CSS).
 ```coffee
 watch 'js',
   'src/js/**/*.coffee'
@@ -73,7 +73,7 @@ watch 'js',
   'build/js'
 ```
 
-This is useful when you need intermediate files. For example, [Browserify] combines Javascript into a single file (I recommend using [RequireJS] instead), so we tell `watch` to reload the browser only when the whole bundle is finished compiling.
+This is useful when you need intermediate files. For example, [Browserify] combines Javascript into a single file (I recommend using [RequireJS] instead), so `watch` will reload the browser only when the whole bundle is finished compiling.
 
 ```coffee
 watch 'browserify',
@@ -82,7 +82,7 @@ watch 'browserify',
   'bin/js/'
 ```
 
----
+### Copying
 
 By ommitting any gulp plugins you can simply copy files from one location to another.
 
@@ -92,7 +92,7 @@ watch 'lib',
   'bin/js/lib'
 ```
 
----
+# Plain Task
 
 If you don't need to watch the sources, just use a `task`. Notice here that plugin sources work as well.
 
@@ -102,7 +102,7 @@ task 'bower',
   'bin/js/lib'
 ```
 
----
+# No Output
 
 If you don't want to pipe the transformed files anywhere, include an empty string as the last argument to `task` (otherwise **Gump** couldn't tell between callback style and succint style call).
 
