@@ -74,7 +74,7 @@ watch 'js',
   'build/js'
 ```
 
-This is useful when you need intermediate files. For example, [Browserify](http://browserify.org/) combines Javascript into a single file (I recommend using [RequireJS](http://requirejs.org/) instead), so `watch` will reload the browser only when the whole bundle is finished compiling.
+This is useful when you need intermediate files. For example, [Browserify](http://browserify.org/) combines all your Javascript into a single file (I recommend using [RequireJS](http://requirejs.org/) instead). We point `watch` at the main file and the browser will reload only when the whole bundle has finished compiling.
 
 ```coffee
 watch 'browserify',
