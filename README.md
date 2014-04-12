@@ -8,11 +8,7 @@ coffee = require 'gulp-coffee'
 stylus = require 'gulp-stylus'
 jade = require 'gulp-jade'
 
-task 'default', [
-  'js'
-  'css'
-  'templates'
-], ->
+task 'default', ['js', 'css', 'templates'], ->
   serve 'bin'
 
 watch 'js',
