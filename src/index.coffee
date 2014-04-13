@@ -9,7 +9,6 @@ once = require 'once'
 subdir = require 'subdir'
 browserSync = require 'browser-sync'
 
-watchedTasks = {}
 serving = undefined
 
 source = (src) ->
@@ -30,11 +29,6 @@ exports.task = (name, src, pipes..., dest) ->
   else
     gulp.task name, src, dest
 
-autoWatch = ->
-  gulp.once 'start', ->
-    for task, filePath of watchedTasks
-      gulp.watch filePath, [task]
-
 shouldServe = (file) ->
   subdir serving.dir, file.path if serving?
 
@@ -44,9 +38,9 @@ livereload = (file) ->
   true
 
 exports.watch = (name, src, pipes..., dest) ->
-  watchedTasks[name] = src
-  do once autoWatch
   gulp.task name, ->
+    do once ->
+      gulp.watch src, [name]
     stream = source src
       .pipe cache name
     pipe stream, pipes, dest
