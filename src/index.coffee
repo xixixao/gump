@@ -13,9 +13,9 @@ watchedTasks = {}
 serving = undefined
 
 source = (src) ->
-  switch typeof src
-    when 'string' then gulp.src src
-    when 'function' then src()
+  switch
+    when typeof src is 'string' or Array.isArray src then gulp.src src
+    when typeof src is 'function' then src()
     else src
 
 pipe = (stream, pipes, dest) ->

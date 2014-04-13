@@ -24,10 +24,10 @@
   serving = void 0;
 
   source = function(src) {
-    switch (typeof src) {
-      case 'string':
+    switch (false) {
+      case !(typeof src === 'string' || Array.isArray(src)):
         return gulp.src(src);
-      case 'function':
+      case typeof src !== 'function':
         return src();
       default:
         return src;
