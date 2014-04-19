@@ -34,8 +34,8 @@ Yes, it's just a nice wrapper for [gulp](http://gulpjs.com/).
 Full-fledged examples, ready to run:
 
 - [pure CoffeeScript library]
-- [CS, Jade, Stylus using RequireJS and Bower](https://github.com/xixixao/gump-example-requirejs)
-- [CS, Jade, Stylus using Browserify and Bower](https://github.com/xixixao/gump-example-browserify)
+- [CoffeeScript, Jade, Stylus using RequireJS and Bower](https://github.com/xixixao/gump-example-requirejs)
+- [CoffeeScript, Jade, Stylus using Browserify and Bower](https://github.com/xixixao/gump-example-browserify)
 
 
 ## Documentation
@@ -101,13 +101,13 @@ task 'bower',
 
 ### No Output
 
-If you don't want to pipe the transformed files anywhere, include an empty string as the last argument to `task` (otherwise **Gump** couldn't tell between callback style and succint style call).
+If you don't want to pipe the transformed files anywhere, include a `null` as the last argument to `task` (otherwise **Gump** couldn't tell between callback style and succint style call). Options to `gulp.src` can be passed in after the source location. If you need more source locations for one task, include them as a consecutive arguments (not an array).
 
 ```coffee
 task 'clean',
-  'bin'
-  -> rm read: false
-  ''
+  'build', 'bin', read: false
+  -> clean()
+  null
 ```
 
 See the [gulp documentation](https://github.com/gulpjs/gulp) for more details on its API.
