@@ -19,9 +19,9 @@
 
   browserSync = require('browser-sync');
 
-  reportWrongUseOfWatch = './errors'.reportWrongUseOfWatch;
+  reportWrongUseOfWatch = require('./errors').reportWrongUseOfWatch;
 
-  parseArguments = './argumentparsing'.parseArguments;
+  parseArguments = require('./argumentparsing').parseArguments;
 
   pipe = function(stream, pipes, dest) {
     var step, _i, _len;

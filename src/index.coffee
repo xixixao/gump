@@ -9,8 +9,8 @@ once = require 'once'
 subdir = require 'subdir'
 browserSync = require 'browser-sync'
 
-{reportWrongUseOfWatch} = './errors'
-{parseArguments} = './argumentparsing'
+{reportWrongUseOfWatch} = require './errors'
+{parseArguments} = require './argumentparsing'
 
 pipe = (stream, pipes, dest) ->
   stream = stream.pipe step() for step in pipes

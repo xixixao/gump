@@ -2,7 +2,7 @@
 (function() {
   var gutil;
 
-  gutil = require('gutil');
+  gutil = require('gulp-util');
 
   exports.reportMissingSource = function(name) {
     var cyan, red, _ref;
@@ -19,9 +19,9 @@
   };
 
   exports.reportWrongUseOfWatch = function(name) {
-    var red;
-    red = gutil.colors.red;
-    gutil.log(red('[Gump Fatal Error]', cyan('watch'), name, red('requires succint style, but callback given')));
+    var cyan, red, _ref;
+    _ref = gutil.colors, red = _ref.red, cyan = _ref.cyan;
+    gutil.log(red('[Gump Fatal Error]', cyan('watch'), red('called'), name, red('requires succint style, but callback given')));
     throw new gutil.PluginError('Gump', 'wrong style for watch');
   };
 
