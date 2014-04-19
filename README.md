@@ -33,7 +33,7 @@ Yes, it's just a nice wrapper for [gulp](http://gulpjs.com/).
 
 Full-fledged examples, ready to run:
 
-- [pure CoffeeScript library]
+- [pure CoffeeScript library](https://github.com/xixixao/gump-example-coffee-script-library)
 - [CoffeeScript, Jade, Stylus using RequireJS and Bower](https://github.com/xixixao/gump-example-requirejs)
 - [CoffeeScript, Jade, Stylus using Browserify and Bower](https://github.com/xixixao/gump-example-browserify)
 
