@@ -101,13 +101,12 @@ task 'bower',
 
 ### No Output
 
-If you don't want to pipe the transformed files anywhere, include a `null` as the last argument to `task` (otherwise **Gump** couldn't tell between callback style and succint style call). Options to `gulp.src` can be passed in after the source location. If you need more source locations for one task, include them as a consecutive arguments (not an array).
+If you need more source locations for one task, include them as a consecutive arguments (not an array). Options to `gulp.src` can be passed in after the source location. If you don't want to pipe the transformed files anywhere, don't include a destination.
 
 ```coffee
 task 'clean',
   'build', 'bin', read: false
   -> clean()
-  null
 ```
 
 See the [gulp documentation](https://github.com/gulpjs/gulp) for more details on its API.
