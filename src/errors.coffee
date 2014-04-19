@@ -1,29 +1,39 @@
 gutil = require 'gulp-util'
 
+# For testing
+exports.GumpError = class GumpError extends Error
+  # required for instanceof to work
+  constructor: (message, @log) -> super message
+
 exports.reportMissingSource = (name) ->
   {red, cyan} = gutil.colors
-  gutil.log red '[Gump Fatal Error]',
-    red 'Succint style used for a'
-    cyan 'task'
-    red 'called'
-    name
-    red 'but missing a source!'
-  throw new gutil.PluginError 'Gump', 'missing source'
+  throw new GumpError 'Gump Error: missing source', ->
+    gutil.log red '[Gump Fatal Error]',
+      red 'Succint style used for'
+      cyan name
+      red 'but missing a source glob!'
 
 exports.reportMissingStyle = (name) ->
   {red, cyan} = gutil.colors
-  gutil.log red '[Gump Fatal Error]',
-    red 'Missing additional arguments for'
-    cyan 'task'
-    red 'called'
-    name
-  throw new gutil.PluginError 'Gump', 'missing source'
+  throw new GumpError 'Gump Error: missing arguments', ->
+    gutil.log red '[Gump Fatal Error]',
+      red 'Missing additional arguments for'
+      cyan name
 
 exports.reportWrongUseOfWatch = (name) ->
   {red, cyan} = gutil.colors
-  gutil.log red '[Gump Fatal Error]',
-    cyan 'watch'
-    red 'called'
-    name
-    red 'requires succint style, but callback given',
-  throw new gutil.PluginError 'Gump', 'wrong style for watch'
+  throw new GumpError 'Gump Error: wrong arguments', ->
+    gutil.log red '[Gump Fatal Error]',
+      red 'Watching'
+      cyan name
+      red 'requires succint style, but callback given',
+
+exports.catchGumpErrors = (fn) ->
+  try
+    fn()
+  catch error
+    if error instanceof GumpError
+      error.log()
+    else
+      throw error
+  return

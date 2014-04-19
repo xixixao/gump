@@ -1,7 +1,7 @@
 chai = require 'chai'
 chai.should()
 
-{parseArguments} = require '../bin/argumentparsing'
+{parseArguments, GumpError} = require '../bin/argumentparsing'
 
 describe 'argument parsing', ->
 
@@ -24,6 +24,20 @@ describe 'argument parsing', ->
       ]
       name.should.eql 'hello'
       callback.should.equal fn
+
+    it 'should work without a callback with some dependencies', ->
+      {name, deps} = parseArguments [
+        'hello'
+        ['a']
+      ]
+      name.should.eql 'hello'
+      deps.should.eql ['a']
+
+    it 'should not work without no callback and no dependencies', ->
+      fn = -> parseArguments [
+        'hello'
+      ]
+      fn.should.throw GumpError
 
   describe 'succint style', ->
 
@@ -57,15 +71,41 @@ describe 'argument parsing', ->
       srcs.should.eql ['from1', 'from2']
       dest.should.eql 'to'
 
-    it 'should accept null as valid dest if there is a pipe', ->
-      {name, srcs, pipes, dest} = parseArguments [
+    it 'should accept options to gulp.src', ->
+      {name, srcs, dest} = parseArguments [
+        'hello'
+        'from1', 'from2', read: no
+        'to'
+      ]
+      name.should.eql 'hello'
+      srcs.should.eql ['from1', 'from2']
+      dest.should.eql 'to'
+
+    it 'should allow no dest if there is a pipe', ->
+      {name, srcs, dest} = parseArguments [
         'hello'
         'from'
         (pipe = -> )
-        null
       ]
       name.should.eql 'hello'
       srcs.should.eql ['from']
-      pipes.should.eql [pipe]
-      chai.expect(dest).to.equal null
+      chai.expect(dest).to.not.exist
 
+    it 'should allow no dest and stream as a source', ->
+      {name, src, pipes, dest} = parseArguments [
+        'hello'
+        (source = -> )
+        (pipe = -> )
+      ]
+      name.should.eql 'hello'
+      console.log pipes
+      src.should.equal source
+      pipes.should.eql [pipe]
+      chai.expect(dest).to.not.exist
+
+    it 'should not accept succint style without a source', ->
+      fn = -> parseArguments [
+        'hello'
+        'dest'
+      ]
+      fn.should.throw GumpError

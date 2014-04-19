@@ -1,20 +1,20 @@
 gulp = require 'gulp'
 
-{reportMissingSource, reportMissingStyle} = './errors'
+{reportMissingSource, reportMissingStyle} = require './errors'
 
 # Rules for arguments to `task` and `watch`
 # @required String |name|
-# @optional Array |dependent tasks|
-# either
-#     @required Function |callback|
+# @optional Array |dependent tasks|    -\_________________
+# either                               -/ at least 1 given
+#     @optional Function |callback|
 #   or
 #     either
 #         @required String... |sources|
 #         @optional Object |options|
 #       or
 #         @required Function |source|
-#     @optional Function... |pipes|     -\ ________________
-#     @optional String |destination|    _/ at least 1 given
+#     @optional Function... |pipes|     -\_________________
+#     @optional String |destination|    -/ at least 1 given
 
 gulpSrcForArgs = (args) ->
   srcs = []
@@ -34,13 +34,15 @@ exports.parseArguments = ([name, args...]) ->
     if Array.isArray potentialDeps
       deps = potentialDeps
       args = args[1..]
-  reportMissingStyle if args.length < 1
-  [args..., lastArg] = args
-  if args.length == 0
-    callback = lastArg
+  reportMissingStyle name unless deps? or args.length > 0
+  [..., lastArg] = args
+  if args.length <= 1 and (not lastArg or typeof lastArg is 'function')
+    callback = lastArg ? ->
   else
-    dest = lastArg
-    reportMissingSource name if args.length < 1
+    reportMissingSource name if args.length < 2
+    [..., lastArg] = args
+    if typeof lastArg is 'string'
+      [args..., dest] = args
     [src] = args
     if typeof src is 'function'
       pipes = args[1..]

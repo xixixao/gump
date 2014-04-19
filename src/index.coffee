@@ -9,7 +9,7 @@ once = require 'once'
 subdir = require 'subdir'
 browserSync = require 'browser-sync'
 
-{reportWrongUseOfWatch} = require './errors'
+{reportWrongUseOfWatch, catchGumpErrors} = require './errors'
 {parseArguments} = require './argumentparsing'
 
 pipe = (stream, pipes, dest) ->
@@ -17,7 +17,7 @@ pipe = (stream, pipes, dest) ->
   stream = stream.pipe gulp.dest dest if dest
   stream
 
-exports.task = (args...) ->
+exports.task = (args...) -> catchGumpErrors ->
   {name, deps, callback, src, pipes, dest} = parseArguments args
   gulp.task name, deps, callback or -> pipe src(), pipes, dest
 
@@ -31,7 +31,7 @@ livereload = (file) ->
     injectFileTypes: ['css', 'png', 'jpg', 'jpeg', 'svg', 'gif', 'webp']
   true
 
-exports.watch = (args...) ->
+exports.watch = (args...) -> catchGumpErrors ->
   {name, deps, callback, src, srcs, pipes, dest} = parseArguments args
   reportWrongUseOfWatch name if callback
   gulp.task name, deps, ->
@@ -44,7 +44,7 @@ exports.watch = (args...) ->
     .pipe notify 'Compiled <%= file.relative %>'
     .pipe filter livereload
 
-exports.serve = (baseDir = './') ->
+exports.serve = (baseDir = './') -> catchGumpErrors ->
   serving =
     dir: baseDir
     instance: browserSync.init [],

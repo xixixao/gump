@@ -5,7 +5,7 @@
 
   gulp = require('gulp');
 
-  _ref = './errors', reportMissingSource = _ref.reportMissingSource, reportMissingStyle = _ref.reportMissingStyle;
+  _ref = require('./errors'), reportMissingSource = _ref.reportMissingSource, reportMissingStyle = _ref.reportMissingStyle;
 
   gulpSrcForArgs = function(args) {
     var opts, potentialOpts, srcs, _ref1;
@@ -38,16 +38,19 @@
         args = args.slice(1);
       }
     }
-    if (args.length < 1) {
-      reportMissingStyle;
+    if (!((deps != null) || args.length > 0)) {
+      reportMissingStyle(name);
     }
-    _ref1 = args, args = 2 <= _ref1.length ? __slice.call(_ref1, 0, _i = _ref1.length - 1) : (_i = 0, []), lastArg = _ref1[_i++];
-    if (args.length === 0) {
-      callback = lastArg;
+    lastArg = args[args.length - 1];
+    if (args.length <= 1 && (!lastArg || typeof lastArg === 'function')) {
+      callback = lastArg != null ? lastArg : function() {};
     } else {
-      dest = lastArg;
-      if (args.length < 1) {
+      if (args.length < 2) {
         reportMissingSource(name);
+      }
+      lastArg = args[args.length - 1];
+      if (typeof lastArg === 'string') {
+        _ref1 = args, args = 2 <= _ref1.length ? __slice.call(_ref1, 0, _i = _ref1.length - 1) : (_i = 0, []), dest = _ref1[_i++];
       }
       src = args[0];
       if (typeof src === 'function') {
