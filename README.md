@@ -101,7 +101,7 @@ task 'bower',
 
 ### No Output
 
-If you need more source locations for one task, include them as a consecutive arguments (not an array). Options to `gulp.src` can be passed in after the source location. If you don't want to pipe the transformed files anywhere, don't include a destination.
+If you need more source locations for one task, include them as consecutive arguments (not an array). Options to `gulp.src` can be passed in after the source location. If you don't want to pipe the transformed files anywhere, don't include a destination.
 
 ```coffee
 task 'clean',
