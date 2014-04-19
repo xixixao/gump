@@ -10,6 +10,15 @@ exports.reportMissingSource = (name) ->
       red 'but missing a source!'
   throw new gutil.PluginError 'Gump', 'missing source'
 
+exports.reportMissingStyle = (name) ->
+  {red, cyan} = gutil.colors
+  gutil.log red '[Gump Fatal Error]',
+      red 'Missing additional arguments for'
+      cyan 'task'
+      red 'called'
+      name
+  throw new gutil.PluginError 'Gump', 'missing source'
+
 exports.reportWrongUseOfWatch = (name) ->
   {red} = gutil.colors
   gutil.log red '[Gump Fatal Error]',

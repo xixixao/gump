@@ -11,6 +11,13 @@
     throw new gutil.PluginError('Gump', 'missing source');
   };
 
+  exports.reportMissingStyle = function(name) {
+    var cyan, red, _ref;
+    _ref = gutil.colors, red = _ref.red, cyan = _ref.cyan;
+    gutil.log(red('[Gump Fatal Error]', red('Missing additional arguments for'), cyan('task'), red('called'), name));
+    throw new gutil.PluginError('Gump', 'missing source');
+  };
+
   exports.reportWrongUseOfWatch = function(name) {
     var red;
     red = gutil.colors.red;

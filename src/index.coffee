@@ -9,7 +9,7 @@ once = require 'once'
 subdir = require 'subdir'
 browserSync = require 'browser-sync'
 
-{reportMissingSource, reportWrongUseOfWatch} = './errors'
+{reportWrongUseOfWatch} = './errors'
 {parseArguments} = './argumentparsing'
 
 pipe = (stream, pipes, dest) ->

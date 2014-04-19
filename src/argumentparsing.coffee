@@ -1,5 +1,7 @@
 gulp = require 'gulp'
 
+{reportMissingSource, reportMissingStyle} = './errors'
+
 # Rules for arguments to `task` and `watch`
 # @required String |name|
 # @optional Array |dependent tasks|
@@ -11,8 +13,8 @@ gulp = require 'gulp'
 #         @optional Object |options|
 #       or
 #         @required Function |source|
-#     @optional Function... |pipes|
-#     @required String|null |destination|
+#     @optional Function... |pipes|     -\ ________________
+#     @optional String |destination|    _/ at least 1 given
 
 gulpSrcForArgs = (args) ->
   srcs = []
@@ -26,13 +28,17 @@ gulpSrcForArgs = (args) ->
       args = args[1..]
   [(-> gulp.src srcs, opts), srcs, args]
 
-exports.parseArguments = ([name, args..., lastArg]) ->
+exports.parseArguments = ([name, args...]) ->
   if args.length > 0
     [potentialDeps] = args
     if Array.isArray potentialDeps
       deps = potentialDeps
       args = args[1..]
-  if not lastArg or typeof lastArg is 'string'
+  reportMissingStyle if args.length < 1
+  [args..., lastArg] = args
+  if args.length == 0
+    callback = lastArg
+  else
     dest = lastArg
     reportMissingSource name if args.length < 1
     [src] = args
@@ -40,6 +46,4 @@ exports.parseArguments = ([name, args..., lastArg]) ->
       pipes = args[1..]
     else
       [src, srcs, pipes] = gulpSrcForArgs args
-  else
-    callback = lastArg
   {name, deps, callback, src, srcs, pipes, dest}
