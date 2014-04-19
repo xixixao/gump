@@ -1,6 +1,6 @@
 {
   "name": "gump",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "The task runner that keeps on running",
   "main": "bin/index.js",
   "repository": {
