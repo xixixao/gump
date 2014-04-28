@@ -80,6 +80,8 @@ watch 'browserify',
   'bin/js/'
 ```
 
+`watch` also automatically fixes errors with [gulp-plumber](https://github.com/floatdrop/gulp-plumber).
+
 ### Deleting sources
 
 **Gump** remembers built files and deletes them if you delete the corresponding source.

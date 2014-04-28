@@ -4,6 +4,7 @@ gulp = require 'gulp'
 cache = require 'gulp-cached'
 notify = require 'gulp-notify'
 filter = require 'gulp-filter'
+plumber = require 'gulp-plumber'
 clean = require 'gulp-clean'
 
 once = require 'once'
@@ -66,6 +67,7 @@ exports.watch = (args...) -> catchGumpErrors ->
       .on 'change', handleDeletion
     stream = src()
       .pipe cache name
+      .pipe plumber()
       .pipe map mark
     stream = pipe stream, pipes, dest
       .pipe map rememberMarked
