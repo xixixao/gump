@@ -1,6 +1,6 @@
 # Gump
 
-Gump is the task runner that keeps on running. It watches your files and if you're working on a client-side app, serves and live reloads them automatically, giving you notifications. It's like [Brunch](http://http://brunch.io/) or [Mimosa](http://http://mimosa.io/) - while keeping **you** in full control.
+**Gump** is the task runner that keeps on running. It watches your files and if you're working on a client-side app, serves and live reloads them automatically, giving you notifications. It's like [Brunch](http://http://brunch.io/) or [Mimosa](http://http://mimosa.io/) - while keeping **you** in full control.
 
 ```coffee
 {task, watch, serve} = require 'gump'
@@ -54,6 +54,7 @@ task 'default', ['js', 'css'], ->
 ### Watching and Live Reload
 
 Whenever you change a sourcefile, `watch` will run the given pipeline only on that file. If you're using `serve` and that file ends up in the served directory the browser will auto reload (or just update in case of images and CSS).
+
 ```coffee
 watch 'js',
   'src/js/**/*.coffee'
@@ -78,6 +79,10 @@ watch 'browserify',
   -> browserify()
   'bin/js/'
 ```
+
+### Deleting sources
+
+**Gump** remembers built files and deletes them if you delete the corresponding source.
 
 ### Copying
 
