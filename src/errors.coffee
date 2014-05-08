@@ -9,7 +9,7 @@ exports.reportMissingSource = (name) ->
   {red, cyan} = gutil.colors
   throw new GumpError 'Gump Error: missing source', ->
     gutil.log red '[Gump Fatal Error]',
-      red 'Succint style used for'
+      red 'Succinct style used for'
       cyan name
       red 'but missing a source glob!'
 
@@ -26,7 +26,7 @@ exports.reportWrongUseOfWatch = (name) ->
     gutil.log red '[Gump Fatal Error]',
       red 'Watching'
       cyan name
-      red 'requires succint style, but callback given',
+      red 'requires succinct style, but callback given',
 
 exports.catchGumpErrors = (fn) ->
   try
