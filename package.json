@@ -28,6 +28,13 @@
   },
   "devDependencies": {
     "chai": "^1.9.1",
-    "gulp": "^3.6.1"
+    "gulp": "^3.6.1",
+    "minimist": "^0.1.0",
+    "tildify": "^0.2.0",
+    "interpret": "^0.3.3",
+    "semver": "^2.3.0",
+    "chalk": "^0.4.0",
+    "liftoff": "^0.11.2",
+    "eval": "^0.1.0"
   }
 }

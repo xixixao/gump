@@ -22,7 +22,7 @@
     var cyan, red, _ref;
     _ref = gutil.colors, red = _ref.red, cyan = _ref.cyan;
     throw new GumpError('Gump Error: missing source', function() {
-      return gutil.log(red('[Gump Fatal Error]', red('Succint style used for'), cyan(name), red('but missing a source glob!')));
+      return gutil.log(red('[Gump Fatal Error]', red('Succinct style used for'), cyan(name), red('but missing a source glob!')));
     });
   };
 
@@ -38,7 +38,7 @@
     var cyan, red, _ref;
     _ref = gutil.colors, red = _ref.red, cyan = _ref.cyan;
     throw new GumpError('Gump Error: wrong arguments', function() {
-      return gutil.log(red('[Gump Fatal Error]', red('Watching'), cyan(name), red('requires succint style, but callback given')));
+      return gutil.log(red('[Gump Fatal Error]', red('Watching'), cyan(name), red('requires succinct style, but callback given')));
     });
   };
 

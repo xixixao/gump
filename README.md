@@ -1,30 +1,44 @@
+- point out you can pass in arguments
+- split serve as separate
+- make correct browserify (or find out whether gulp-browserify or faster-browserify works)
+- add --save-dev to install all required modules inside gumpfile.coffee
+  - make a seperate tool that does this when passed in a glob and whether dev or normal module
+- allow to pass in options to gump tasks:
+  gump coffee -a -b=123
+  coffee = ({a, b}) -> ...
+  - we can check whether those options are available, but that is not important
+
 # Gump
 
 **Gump** is the task runner that keeps on running. It watches your files and if you're working on a client-side app, serves and live reloads them automatically, giving you notifications. It's like [Brunch](http://http://brunch.io/) or [Mimosa](http://http://mimosa.io/) - while keeping **you** in full control.
 
 ```coffee
-{task, watch, serve} = require 'gump'
+{gump, to, pipe, watch, serve} = (require 'gump') require 'gulp'
 coffee = require 'gulp-coffee'
 stylus = require 'gulp-stylus'
 jade = require 'gulp-jade'
 
-task 'default', ['js', 'css', 'templates'], ->
+all = ->
+  watch compiled()
   serve 'bin'
 
-watch 'js',
-  'src/js/**/*.coffee'
-  -> coffee()
-  'bin/js'
+compiled = ->
+  pipe js(), css(), templates(),
+    -> to 'bin'
 
-watch 'css',
-  'src/css/**/*.styl'
-  -> stylus()
-  'bin/css'
+js = ->
+  pipe 'src|js/**/*.coffee',
+    -> coffee()
 
-watch 'templates',
-  'src/**/*.jade'
-  -> jade()
-  'bin'
+css = ->
+  pipe 'src|css/**/*.styl',
+    -> stylus()
+
+templates = ->
+  pipe 'src|**/*.jade',
+    -> jade()
+
+gump {all}
 ```
 
 Yes, it's just a nice wrapper for [gulp](http://gulpjs.com/).
@@ -119,3 +133,18 @@ task 'clean',
 See the [gulp documentation](https://github.com/gulpjs/gulp) for more details on its API.
 
 Special thanks to @lachenmayer for the initial syntax idea.
+
+
+### Source Paths
+
+Using globs, but `|` seperates base from the rest.
+
+### gump.pipe
+
+Returns
+
+```coffee
+sources: [String]
+pipes: [Function]
+```
+
