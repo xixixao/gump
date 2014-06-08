@@ -14,7 +14,7 @@ rimraf = require 'rimraf'
 
 tasks
   # The default task (called when you run `gulp` from cli)
-  all: ->
+  default: ->
     run @clean,
       @assets
       # Rerun the task when a file changes
