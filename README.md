@@ -106,7 +106,7 @@ Globs are used to create Streams. Streams carry a set of files, which can be mod
       -> to 'bin'
 ```
 
-This call to **pipe** creates a Stream of files matching the Glob and copies them to the 'bin' directory. Streams are passed through Modifiers, functions which return an instance of some gulp plugin.
+This call to **pipe** creates a Stream of files matching the Glob and copies them to the `bin` directory. Streams are passed through Modifiers, functions which return an instance of some gulp plugin.
 
 ```coffee
 coffee = require 'gulp-coffee'
