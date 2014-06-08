@@ -27,7 +27,7 @@ tasks
 
   scripts: ->
     # Minify and copy all JavaScript (except vendor scripts)
-    pipe 'client|js/**/*.coffee', '!client/js/external/**/*.coffee',
+    pipe 'client|js/{!external}/**/*.coffee',
       -> coffee()
       -> uglify()
       -> concat 'all.min.js'
@@ -91,10 +91,11 @@ Globs in Gump add one special syntax, the base path separator.
 'src|style/**/*.css'
 ```
 
-If you were to copy the file `src/style/main.css` matched by this glob into the `compiled` directory, the resulting file path would be `compiled/style/main.css`. You can also create negative Globs, which will prevent files to be matched, by placing `!` at the start of the string
+If you were to copy the file `src/style/main.css` matched by this glob into the `compiled` directory, the resulting file path would be `compiled/style/main.css`. You can also exclude files from being matched by adding `!` in front of options or create negative Globs by placing `!` at the start of the string.
 
 ```coffee
-'!src/lib/**'
+'src/{!lib}/**'
+'src/**', '!src/lib/**'
 ```
 
 Globs are used to create Streams. Streams carry a set of files, which can be modified (both in contents and location) and written back to the file system. In Gump, you use the **pipe** function to create Streams.
