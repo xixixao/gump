@@ -158,20 +158,21 @@ Gump is also a task runner, and as such provides a mechanism for scheduling task
 
 ```coffee
 {run} = require 'gump'
-default: ->
-  run @clean(),
-    @build()
-    @build()
-    @test()
+
+  default: ->
+    run @clean(),
+      @build()
+      @build()
+      @test()
 ```
 
 Most of the time, you will simply combine streams, but for times when this not possible, **run** can be useful. You can also run tasks in parallel, and similarly with **pipe**, you don't have to call the tasks.
 
 ```coffee
-default: ->
-  run @build,
-    [@lint, @test]
-    @deploy
+  default: ->
+    run @build,
+      [@lint, @test]
+      @deploy
 ```
 
 Here is an example gulpfile which includes all the mentioned features.
