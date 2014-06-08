@@ -27,7 +27,7 @@ tasks
 
   scripts: ->
     # Minify and copy all JavaScript (except vendor scripts)
-    pipe 'client|js/**/*.coffee', '!client/external/**/*.coffee',
+    pipe 'client|js/**/*.coffee', '!client/js/external/**/*.coffee',
       -> coffee()
       -> uglify()
       -> concat 'all.min.js'
@@ -166,7 +166,7 @@ Gump is also a task runner, and as such provides a mechanism for scheduling task
       @test()
 ```
 
-Most of the time, you will simply combine streams, but for times when this not possible, **run** can be useful. You can also run tasks in parallel, and similarly with **pipe**, you don't have to call the tasks.
+Most of the time, you will simply combine streams, but for times when this is not possible, **run** can be useful. You can also run tasks in parallel, and similarly with **pipe**, you don't have to call the tasks.
 
 ```coffee
   default: ->
