@@ -79,7 +79,7 @@ Most of the time though, you will want to handle files inside your tasks. Gump p
 'src/**/*.coffee'
 ```
 
-'**' stands for arbitrary path, '*' for arbitrary substring of a file name. You can also give specific options.
+`**` stands for arbitrary path, `*` for arbitrary substring of a file name. You can also give specific options.
 
 ```coffee
 'src/{main,lib}.coffee'
@@ -91,7 +91,7 @@ Globs in Gump add one special syntax, the base path separator.
 'src|style/**/*.css'
 ```
 
-If you were to copy the file `src/style/main.css` matched by this glob into the 'compiled' directory, the resulting file path would be `compiled/style/main.css`. You can also create negative Globs, which will prevent files to be matched, by placing `!` at the start of the string
+If you were to copy the file `src/style/main.css` matched by this glob into the `compiled` directory, the resulting file path would be `compiled/style/main.css`. You can also create negative Globs, which will prevent files to be matched, by placing `!` at the start of the string
 
 ```coffee
 '!src/lib/**'
