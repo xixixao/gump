@@ -35,7 +35,7 @@ tasks
   # Copy all static images
   images: ->
     pipe 'client|img/**/*',
-      # Pass in options to the task
+      # Pass in options to the plugin
       -> imagemin optimizationLevel: 5
 
   clean: ->
