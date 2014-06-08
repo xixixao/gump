@@ -10,6 +10,9 @@ clean = require 'gulp-clean'
 once = require 'once'
 subdir = require 'subdir'
 browserSync = require 'browser-sync'
+asyncDone = require 'async-done'
+async = require 'async'
+Promise = require 'bluebird'
 
 {reportWrongUseOfWatch, catchGumpErrors} = require './errors'
 {parseArguments} = require './argumentparsing'
@@ -80,3 +83,56 @@ exports.serve = (baseDir = './') -> catchGumpErrors ->
       server: {baseDir}
       notify: false
 
+tasks = {}
+
+exports.tasks = (tasksDefinition) ->
+  tasks = tasksDefinition
+  console.log tasksDefinition
+  for own name, task of tasksDefinition
+    do (name, task) ->
+      tasksDefinition[name] = (args...) ->
+        new Task name, task args...
+  for own name, task of tasksDefinition
+    do (name, task) ->
+      gulp.task name, ->
+        run task()
+
+exports.pipe = (args...) ->
+  sources = []
+  mutators = []
+  for arg in args
+    if arg in tasksDefinition
+      sources.push arg()
+    else if arg instanceof Task
+      sources.push arg
+    else if typeof arg is 'string'
+      sources.push glob arg
+    else
+      mutators.push arg
+  new Pipe sources, mutators
+
+exports.Task = class Task
+  constructor: (@name, @body) ->
+
+exports.Pipe = class Pipe
+  constructor: (@sources, @mutators) ->
+  run: (cb) ->
+    stream = combine @sources
+    stream = stream.pipe @mutators() for step in pipes
+    asyncDone (-> stream), cb
+
+exports.run = run = (args...) ->
+  tasks = for arg in args
+    if Array.isArray arg
+      (cb) -> async.parallel arg, cb
+    else if arg instanceof Task
+      (cb) -> asyncDone arg.body, (err, result) ->
+        if result instanceof Pipe
+          result.run cb
+        else
+          cb err, result
+    else if arg instanceof Pipe
+      (cb) -> arg.run cb
+  Promise.promisify(async.series) tasks
+
+exports.to = gulp.dest
