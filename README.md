@@ -1,150 +1,211 @@
-- point out you can pass in arguments
-- split serve as separate
-- make correct browserify (or find out whether gulp-browserify or faster-browserify works)
-- add --save-dev to install all required modules inside gumpfile.coffee
-  - make a seperate tool that does this when passed in a glob and whether dev or normal module
-- allow to pass in options to gump tasks:
-  gump coffee -a -b=123
-  coffee = ({a, b}) -> ...
-  - we can check whether those options are available, but that is not important
-
 # Gump
 
-**Gump** is the task runner that keeps on running. It watches your files and if you're working on a client-side app, serves and live reloads them automatically, giving you notifications. It's like [Brunch](http://http://brunch.io/) or [Mimosa](http://http://mimosa.io/) - while keeping **you** in full control.
+**Gump** is a task runner and a build file tool based on [gulp](http://gulpjs.com/).
 
 ```coffee
-{gump, to, pipe, watch, serve} = (require 'gump') require 'gulp'
+{pipe, to, run, watch} = require 'gump'
+serve = require 'gump-serve'
+
 coffee = require 'gulp-coffee'
-stylus = require 'gulp-stylus'
-jade = require 'gulp-jade'
+concat = require 'gulp-concat'
+uglify = require 'gulp-uglify'
+imagemin = require 'gulp-imagemin'
+rimraf = require 'rimraf'
 
-all = ->
-  watch compiled()
-  serve 'bin'
+tasks
+  # The default task (called when you run `gulp` from cli)
+  all: ->
+    run @clean,
+      @assets
+      # Rerun the task when a file changes
+      # Serve the build directory
+      [serve('build'), watch(@assets)]
 
-compiled = ->
-  pipe js(), css(), templates(),
-    -> to 'bin'
+  assets: ->
+    pipe @scripts, @images,
+      -> to 'build'
 
-js = ->
-  pipe 'src|js/**/*.coffee',
-    -> coffee()
+  scripts: ->
+    # Minify and copy all JavaScript (except vendor scripts)
+    pipe 'client|js/**/*.coffee', '!client/external/**/*.coffee',
+      -> coffee()
+      -> uglify()
+      -> concat 'all.min.js'
 
-css = ->
-  pipe 'src|css/**/*.styl',
-    -> stylus()
+  # Copy all static images
+  images: ->
+    pipe 'client|img/**/*',
+      # Pass in options to the task
+      -> imagemin optimizationLevel: 5
 
-templates = ->
-  pipe 'src|**/*.jade',
-    -> jade()
-
-gump {all}
+  clean: ->
+    rimraf 'build'
 ```
 
-Yes, it's just a nice wrapper for [gulp](http://gulpjs.com/).
 
-## Examples
+## Walkthrough
 
-Full-fledged examples, ready to run:
+With Gump, you define tasks in an object literal passed into **tasks**.
+```coffee
+{tasks} = require 'gump'
 
-- [pure CoffeeScript library](https://github.com/xixixao/gump-example-coffee-script-library)
-- [CoffeeScript, Jade, Stylus using RequireJS and Bower](https://github.com/xixixao/gump-example-requirejs)
-- [CoffeeScript, Jade, Stylus using Browserify and Bower](https://github.com/xixixao/gump-example-browserify)
+tasks
+  default: ->
+    # task definition
+  clean: ->
+    # ...
+```
 
-
-## Documentation
-
-Piece these together to make up your build.
-
-### Serving
-
-`serve` uses `browser-sync`, just give it the top directory of your app and it will open a browser window with the app running.
+Task definitions are just ordinary functions, and you can do anything you want inside of them. If the task includes asynchronous code, you should make sure that Gump can find out when the task is done.
 
 ```coffee
-task 'default', ['js', 'css'], ->
-  serve 'bin'
+tasks
+  # synchronous
+  clean: ->
+    rimraf 'bin'
+  # returning a Promise
+  api: ->
+    promisify(apiCall) 'www.test.com'
+  # calling @done
+  test: ->
+    fs.readFile 'test', (err, contents) =>
+      console.log contents
+      @done err
 ```
 
-### Watching and Live Reload
-
-Whenever you change a sourcefile, `watch` will run the given pipeline only on that file. If you're using `serve` and that file ends up in the served directory the browser will auto reload (or just update in case of images and CSS).
+Most of the time though, you will want to handle files inside your tasks. Gump provides an easy way to manipulate files. First, you match files using Globs. Globs are strings representing file paths with expansions similar to bash.
 
 ```coffee
-watch 'js',
-  'src/js/**/*.coffee'
-  -> coffee()
-  'bin/js'
+'src/**/*.coffee'
 ```
 
-If you don't want to reload the web page when a file is changed, output it outside the served directory.
+'**' stands for arbitrary path, '*' for arbitrary substring of a file name. You can also give specific options.
 
 ```coffee
-watch 'js',
-  'src/js/**/*.coffee'
-  -> coffee()
-  'build/js'
+'src/{main,lib}.coffee'
 ```
 
-This is useful when you need intermediate files. For example, [Browserify](http://browserify.org/) combines all your Javascript into a single file (I recommend using [RequireJS](http://requirejs.org/) instead). We point `watch` at the main file and the browser will reload only when the whole bundle has finished compiling. **this is broken, seriously, use RequireJS instead**
+Globs in Gump add one special syntax, the base path separator.
 
 ```coffee
-watch 'browserify',
-  'build/js/app.js'
-  -> browserify()
-  'bin/js/'
+'src|style/**/*.css'
 ```
 
-`watch` also automatically fixes errors with [gulp-plumber](https://github.com/floatdrop/gulp-plumber).
-
-### Deleting sources
-
-**Gump** remembers built files and deletes them if you delete the corresponding source.
-
-### Copying
-
-By ommitting any gulp plugins you can simply copy files from one location to another.
+If you were to copy the file `src/style/main.css` matched by this glob into the 'compiled' directory, the resulting file path would be `compiled/style/main.css`. You can also create negative Globs, which will prevent files to be matched, by placing `!` at the start of the string
 
 ```coffee
-watch 'lib',
-  'src/js/lib/**/*.js'
-  'bin/js/lib'
+'!src/lib/**'
 ```
 
-### Plain Task
-
-If you don't need to watch the sources, just use a `task`. Notice here that plugin sources work as well.
+Globs are used to create Streams. Streams carry a set of files, which can be modified (both in contents and location) and written back to the file system. In Gump, you use the **pipe** function to create Streams.
 
 ```coffee
-task 'bower',
-  -> bower()
-  'bin/js/lib'
+{pipe, to} = require 'gump'
+
+    pipe 'src|*.coffee',
+      -> to 'bin'
 ```
 
-### No Output
-
-If you need more source locations for one task, include them as consecutive arguments (not an array). Options to `gulp.src` can be passed in after the source location. If you don't want to pipe the transformed files anywhere, don't include a destination.
+This call to **pipe** creates a Stream of files matching the Glob and copies them to the 'bin' directory. Streams are passed through Modifiers, functions which return an instance of some gulp plugin.
 
 ```coffee
-task 'clean',
-  'build', 'bin', read: false
-  -> clean()
+coffee = require 'gulp-coffee'
+minify = require 'gulp-minify'
+
+    pipe 'src|*.coffee',
+      -> coffee bare: true
+      -> minify()
+      -> to 'minified'
 ```
 
-See the [gulp documentation](https://github.com/gulpjs/gulp) for more details on its API.
-
-Special thanks to @lachenmayer for the initial syntax idea.
-
-
-### Source Paths
-
-Using globs, but `|` seperates base from the rest.
-
-### gump.pipe
-
-Returns
+**to** itself is just a gulp plugin, one which writes files to the disk. **pipe** accepts arbitrary number of sources, including other Streams, and combines them into a single Stream. This way, you can compose tasks which are made of Streams.
 
 ```coffee
-sources: [String]
-pipes: [Function]
+tasks
+  js: ->###put this at the end###
+    pipe 'src|*.coffee',
+      -> coffee()
+  minJs: ->
+    pipe @js(),
+      -> minify()
+      -> to 'minified'
+  testJs: ->
+    pipe @js(),
+      -> to 'test'
 ```
 
+**pipe** can figure out that you passed in a task, so you don't have to call the task if it doesn't accept any arguments.
+
+```coffee
+  minJs: ->
+    pipe @js,
+      -> to 'minimized'
+```
+
+But tasks *can* take arguments, which lets you customize them in different ways.  You can pass different arguments to Modifiers, different Modifiers or sources to **pipe**.
+
+```coffee
+header = require 'gulp-header'
+
+  default: ->
+    pipe @header(@js, @ls, '1.8')
+  header: (compiled..., version) ->
+    pipe compiled...,
+      -> header "Lang #{version}"
+```
+
+Gump is also a task runner, and as such provides a mechanism for scheduling tasks via the **run** function.
+
+```coffee
+{run} = require 'gump'
+default: ->
+  run @clean(),
+    @build()
+    @build()
+    @test()
+```
+
+Most of the time, you will simply combine streams, but for times when this not possible, **run** can be useful. You can also run tasks in parallel, and similarly with **pipe**, you don't have to call the tasks.
+
+```coffee
+default: ->
+  run @build,
+    [@lint, @test]
+    @deploy
+```
+
+Here is an example gulpfile which includes all the mentioned features.
+
+## Beyond Gump - Work in Progress below
+
+You can create support tasks which will not be callable from the command line, to make the API clearer.
+
+```coffee
+tasks
+  default: ->
+    run [@js, @css]
+support
+  js: ->
+  css: ->
+```
+
+gump-watch, gump-serve
+
+## Design
+
+**run** doesn't allow nested parallel sets, to discourage unreadable execution patterns.
+
+In general, you should keep the **run** calls simple. If you need to run many tasks in parallel in the middle of a series, its better to decompose them.
+
+default: ->
+  run @compile,
+    @check
+    @deploy
+check: ->
+  run [
+    @test
+    @lint
+    @hint
+    @travis
+
+]
