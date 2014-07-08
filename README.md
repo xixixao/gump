@@ -1,3 +1,19 @@
+**TODO:**
+
+- globs (hack solution)
+  - parse out base dir
+  - get out negative patterns from combined patterns
+  - pass each glob with all negative ones into glob-stream
+  - combine all the streams
+- tasks
+  - register all tasks
+- pipe
+- serve
+- watch
+- run
+
+Following is a spec, not implemented.
+
 # Gump
 
 **Gump** is a task runner and a build file tool based on [gulp](http://gulpjs.com/).
@@ -30,7 +46,7 @@ tasks
     pipe 'client|js/{!external}/**/*.coffee',
       -> coffee()
       -> uglify()
-      -> concat 'all.min.js'
+      -> concat 'js/all.min.js'
 
   # Copy all static images
   images: ->
@@ -189,6 +205,12 @@ tasks
 support
   js: ->
   css: ->
+```
+
+Use double `!` to also include files with no parent folder.
+
+```coffee
+'src/{!!lib}/*.coffee'
 ```
 
 gump-watch, gump-serve

@@ -87,7 +87,6 @@ tasks = {}
 
 exports.tasks = (tasksDefinition) ->
   tasks = tasksDefinition
-  console.log tasksDefinition
   for own name, task of tasksDefinition
     do (name, task) ->
       tasksDefinition[name] = (args...) ->
