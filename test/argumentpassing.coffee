@@ -98,7 +98,6 @@ describe 'argument parsing', ->
         (pipe = -> )
       ]
       name.should.eql 'hello'
-      console.log pipes
       src.should.equal source
       pipes.should.eql [pipe]
       chai.expect(dest).to.not.exist

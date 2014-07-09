@@ -7,15 +7,19 @@ filter = require 'gulp-filter'
 plumber = require 'gulp-plumber'
 clean = require 'gulp-clean'
 
+combine = require 'ordered-read-streams'
 once = require 'once'
 subdir = require 'subdir'
 browserSync = require 'browser-sync'
 asyncDone = require 'async-done'
 async = require 'async'
 Promise = require 'bluebird'
+map = require 'vinyl-map'
+unique = require 'unique-stream'
 
 {reportWrongUseOfWatch, catchGumpErrors} = require './errors'
 {parseArguments} = require './argumentparsing'
+{globsToStream} = require './globbing'
 
 map = (fn) ->
   filter (file) ->
@@ -97,17 +101,19 @@ exports.tasks = (tasksDefinition) ->
         run task()
 
 exports.pipe = (args...) ->
+  globs = []
   sources = []
   mutators = []
   for arg in args
-    if arg in tasksDefinition
+    if arg in tasks
       sources.push arg()
     else if arg instanceof Task
       sources.push arg
     else if typeof arg is 'string'
-      sources.push glob arg
+      globs.push arg
     else
       mutators.push arg
+  sources.push gulp.src globs
   new Pipe sources, mutators
 
 exports.Task = class Task
@@ -117,7 +123,8 @@ exports.Pipe = class Pipe
   constructor: (@sources, @mutators) ->
   run: (cb) ->
     stream = combine @sources
-    stream = stream.pipe @mutators() for step in pipes
+    stream = stream.pipe unique 'path'
+    stream = stream.pipe step() for step in @mutators
     asyncDone (-> stream), cb
 
 exports.run = run = (args...) ->

@@ -1,6 +1,7 @@
 path = require 'path'
 globStream = require 'glob-stream'
 combine = require 'ordered-read-streams'
+gulp = require 'gulp'
 
 BASE_PATH_SEPARATOR = '|'
 
