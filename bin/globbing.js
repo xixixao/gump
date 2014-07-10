@@ -50,12 +50,12 @@
     } else if (countSubstrings(glob, '{!') > 0) {
       positive = glob.replace(/\{(\!+)[^\}]+\}/, function(pattern, negators) {
         if (negators.length === 2) {
-          return '**';
+          return '{,*}';
         } else {
           return '*';
         }
       });
-      negative = '!' + glob.replace(/\{\!+([^\}]+)\}/, '{$1}');
+      negative = '!' + glob.replace(/\{\!+([^,\}]+)\}/, '$1').replace(/\{\!+([^\}]+)\}/, '{$1}');
       return {
         positive: positive,
         negative: negative
@@ -99,7 +99,8 @@
       _results = [];
       for (_i = 0, _len = globsPositive.length; _i < _len; _i++) {
         _ref = globsPositive[_i], positive = _ref.positive, base = _ref.base;
-        _results.push(globStream.create([positive].concat(negatives), {
+        console.log(positive, negatives);
+        _results.push(gulp.src([positive].concat(negatives), {
           base: base
         }));
       }

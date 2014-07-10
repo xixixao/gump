@@ -107,7 +107,7 @@ Globs in Gump add one special syntax, the base path separator.
 'src|style/**/*.css'
 ```
 
-If you were to copy the file `src/style/main.css` matched by this glob into the `compiled` directory, the resulting file path would be `compiled/style/main.css`. You can also exclude files from being matched by adding `!` in front of an option or create negative Globs by placing `!` at the start of the string.
+If you were to copy the file `src/style/main.css` matched by this glob into the `compiled` directory, the resulting file path would be `compiled/style/main.css`. You can also exclude files from being matched by adding `!` in front of options or create negative Globs by placing `!` at the start of the string.
 
 ```coffee
 'src/{!lib}/**'
@@ -207,12 +207,11 @@ support
   css: ->
 ```
 
-Use an empty option to also include files with no string instead of the option in the path. So the last example will match `src/d/.coffee` and `src/test.coffee`.
+Use double `!` to also include files with no string instead of the negative options in their path. So the last example will match both `src/d/.coffee` and `src/test.coffee`.
 
 ```coffee
-'src/{a,b,!c}/*.coffee' # a or b but not c
-'src/{!c}/*.coffee' # any string but c
-'src/{,!c}/*.coffee' # any string including no string but c
+'src/{!a,b}/*.coffee' # anything but c or d
+'src/{!!a,b}/*.coffee' # anything including no string but c
 ```
 
 gump-watch, gump-serve

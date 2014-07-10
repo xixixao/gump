@@ -198,7 +198,7 @@
         mutators.push(arg);
       }
     }
-    sources.push(gulp.src(globs));
+    sources.push(globsToStream(globs));
     return new Pipe(sources, mutators);
   };
 

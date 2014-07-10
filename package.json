@@ -43,6 +43,7 @@
     "async": "^0.9.0",
     "bluebird": "^2.0.5",
     "async-done": "^0.2.0",
-    "vinyl-map": "^1.0.1"
+    "vinyl-map": "^1.0.1",
+    "map-stream": "^0.1.0"
   }
 }

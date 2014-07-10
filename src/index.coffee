@@ -113,7 +113,7 @@ exports.pipe = (args...) ->
       globs.push arg
     else
       mutators.push arg
-  sources.push gulp.src globs
+  sources.push globsToStream globs
   new Pipe sources, mutators
 
 exports.Task = class Task

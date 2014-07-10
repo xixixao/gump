@@ -29,10 +29,12 @@ findNegative = (glob) ->
   else if countSubstrings(glob, '{!') > 0
     positive = glob.replace /\{(\!+)[^\}]+\}/, (pattern, negators) ->
       if negators.length == 2
-        '**'
+        '{,*}'
       else
         '*'
-    negative = '!' + glob.replace /\{\!+([^\}]+)\}/, '{$1}'
+    negative = '!' + glob
+      .replace /\{\!+([^,\}]+)\}/, '$1' # single option
+      .replace /\{\!+([^\}]+)\}/, '{$1}' # multiple options
     {positive, negative}
   else
     positive: glob
@@ -46,5 +48,6 @@ exports.globsToStream = (globs) ->
     .map ({negative}) -> negative
   globsPositive = globsPosNeg.filter ({positive}) -> positive?
   streams = for {positive, base} in globsPositive
-    globStream.create [positive].concat(negatives), {base}
+    console.log positive, negatives
+    gulp.src [positive].concat(negatives), {base}
   combine streams
