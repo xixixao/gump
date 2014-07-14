@@ -99,6 +99,7 @@ exports.tasks = (tasksDefinition) ->
     do (name, task) ->
       gulp.task name, ->
         run task()
+  gulp
 
 exports.pipe = (args...) ->
   globs = []

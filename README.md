@@ -1,10 +1,5 @@
 **TODO:**
 
-- globs (hack solution)
-  - parse out base dir
-  - get out negative patterns from combined patterns
-  - pass each glob with all negative ones into glob-stream
-  - combine all the streams
 - tasks
   - register all tasks
 - pipe

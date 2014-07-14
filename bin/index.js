@@ -153,7 +153,7 @@
   tasks = {};
 
   exports.tasks = function(tasksDefinition) {
-    var name, task, _fn, _results;
+    var name, task, _fn, _fn1;
     tasks = tasksDefinition;
     _fn = function(name, task) {
       return tasksDefinition[name] = function() {
@@ -167,17 +167,17 @@
       task = tasksDefinition[name];
       _fn(name, task);
     }
-    _results = [];
+    _fn1 = function(name, task) {
+      return gulp.task(name, function() {
+        return run(task());
+      });
+    };
     for (name in tasksDefinition) {
       if (!__hasProp.call(tasksDefinition, name)) continue;
       task = tasksDefinition[name];
-      _results.push((function(name, task) {
-        return gulp.task(name, function() {
-          return run(task());
-        });
-      })(name, task));
+      _fn1(name, task);
     }
-    return _results;
+    return gulp;
   };
 
   exports.pipe = function() {

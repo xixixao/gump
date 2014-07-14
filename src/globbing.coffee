@@ -48,6 +48,5 @@ exports.globsToStream = (globs) ->
     .map ({negative}) -> negative
   globsPositive = globsPosNeg.filter ({positive}) -> positive?
   streams = for {positive, base} in globsPositive
-    console.log positive, negatives
     gulp.src [positive].concat(negatives), {base}
   combine streams

@@ -99,7 +99,6 @@
       _results = [];
       for (_i = 0, _len = globsPositive.length; _i < _len; _i++) {
         _ref = globsPositive[_i], positive = _ref.positive, base = _ref.base;
-        console.log(positive, negatives);
         _results.push(gulp.src([positive].concat(negatives), {
           base: base
         }));
