@@ -153,29 +153,25 @@
   tasks = {};
 
   exports.tasks = function(tasksDefinition) {
-    var name, task, _fn, _fn1;
+    var name, taskFn, _fn;
     tasks = tasksDefinition;
-    _fn = function(name, task) {
-      return tasksDefinition[name] = function() {
+    _fn = function(name, taskFn) {
+      var task;
+      tasksDefinition[name] = task = function() {
         var args;
         args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-        return new Task(name, task.apply(null, args));
+        return new Task(name, function(done) {
+          return taskFn.apply(null, __slice.call(args).concat([done]));
+        });
       };
-    };
-    for (name in tasksDefinition) {
-      if (!__hasProp.call(tasksDefinition, name)) continue;
-      task = tasksDefinition[name];
-      _fn(name, task);
-    }
-    _fn1 = function(name, task) {
       return gulp.task(name, function() {
         return run(task());
       });
     };
     for (name in tasksDefinition) {
       if (!__hasProp.call(tasksDefinition, name)) continue;
-      task = tasksDefinition[name];
-      _fn1(name, task);
+      taskFn = tasksDefinition[name];
+      _fn(name, taskFn);
     }
     return gulp;
   };
@@ -250,7 +246,7 @@
           });
         } else if (arg instanceof Task) {
           _results.push(function(cb) {
-            return asyncDone(arg.body, function(err, result) {
+            return asyncDone.sync(arg.body, function(err, result) {
               if (result instanceof Pipe) {
                 return result.run(cb);
               } else {

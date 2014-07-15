@@ -91,12 +91,10 @@ tasks = {}
 
 exports.tasks = (tasksDefinition) ->
   tasks = tasksDefinition
-  for own name, task of tasksDefinition
-    do (name, task) ->
-      tasksDefinition[name] = (args...) ->
-        new Task name, task args...
-  for own name, task of tasksDefinition
-    do (name, task) ->
+  for own name, taskFn of tasksDefinition
+    do (name, taskFn) ->
+      tasksDefinition[name] = task = (args...) ->
+        new Task name, (done) -> taskFn args..., done
       gulp.task name, ->
         run task()
   gulp
@@ -133,7 +131,7 @@ exports.run = run = (args...) ->
     if Array.isArray arg
       (cb) -> async.parallel arg, cb
     else if arg instanceof Task
-      (cb) -> asyncDone arg.body, (err, result) ->
+      (cb) -> asyncDone.sync arg.body, (err, result) ->
         if result instanceof Pipe
           result.run cb
         else

@@ -77,11 +77,9 @@ tasks
   # returning a Promise
   api: ->
     promisify(apiCall) 'www.test.com'
-  # returning a callback and calling done
-  test: -> (done) ->
-    fs.readFile 'test', (err, contents) =>
-      console.log contents
-      done err
+  # returning a Stream
+  test: ->
+    pipe 'test.js', -> to 'build'
 ```
 
 Most of the time though, you will want to handle files inside your tasks. Gump provides an easy way to manipulate files. First, you match files using Globs. Globs are strings representing file paths with expansions similar to bash.
