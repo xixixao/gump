@@ -31,19 +31,19 @@
     "unique-stream": "^1.0.0"
   },
   "devDependencies": {
-    "chai": "^1.9.1",
-    "gulp": "^3.6.1",
-    "minimist": "^0.1.0",
-    "tildify": "^0.2.0",
-    "interpret": "^0.3.3",
-    "semver": "^2.3.0",
-    "chalk": "^0.4.0",
-    "liftoff": "^0.11.2",
-    "eval": "^0.1.0",
     "async": "^0.9.0",
-    "bluebird": "^2.0.5",
     "async-done": "^0.2.0",
-    "vinyl-map": "^1.0.1",
-    "map-stream": "^0.1.0"
+    "bluebird": "^2.2.2",
+    "chai": "^1.9.1",
+    "chalk": "^0.4.0",
+    "eval": "^0.1.0",
+    "gulp": "^3.6.1",
+    "interpret": "^0.3.3",
+    "liftoff": "^0.11.2",
+    "map-stream": "^0.1.0",
+    "minimist": "^0.1.0",
+    "semver": "^2.3.0",
+    "tildify": "^0.2.0",
+    "vinyl-map": "^1.0.1"
   }
 }
