@@ -94,7 +94,7 @@ Most of the time though, you will want to handle files inside your tasks. Gump p
 'src/{main,lib}.coffee'
 ```
 
-Globs in Gump add one special syntax, the base path separator.
+Globs in Gump add one special syntax, the base path separator `|`.
 
 ```coffee
 'src|style/**/*.css'
@@ -132,9 +132,6 @@ minify = require 'gulp-minify'
 
 ```coffee
 tasks
-  js: ->###put this at the end###
-    pipe 'src|*.coffee',
-      -> coffee()
   minJs: ->
     pipe @js(),
       -> minify()
@@ -142,6 +139,9 @@ tasks
   testJs: ->
     pipe @js(),
       -> to 'test'
+  js: ->
+    pipe 'src|*.coffee',
+      -> coffee()
 ```
 
 **pipe** can figure out that you passed in a task, so you don't have to call the task if it doesn't accept any arguments.
@@ -158,10 +158,11 @@ But tasks *can* take arguments, which lets you customize them in different ways.
 header = require 'gulp-header'
 
   default: ->
-    pipe @header(@js, @ls, '1.8')
-  header: (compiled..., version) ->
+    pipe @versionize(@js, @css, '1.8'),
+      -> to 'build'
+  versionize: (compiled..., version) ->
     pipe compiled...,
-      -> header "Lang #{version}"
+      -> header "Project version: #{version}"
 ```
 
 Gump is also a task runner, and as such provides a mechanism for scheduling tasks via the **run** function.
@@ -225,5 +226,4 @@ check: ->
     @lint
     @hint
     @travis
-
-]
+  ]
