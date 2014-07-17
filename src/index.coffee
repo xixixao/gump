@@ -13,7 +13,7 @@ subdir = require 'subdir'
 browserSync = require 'browser-sync'
 asyncDone = require 'async-done'
 async = require 'async'
-Promise = require 'bluebird'
+{promisify} = require 'bluebird'
 map = require 'vinyl-map'
 unique = require 'unique-stream'
 
@@ -115,10 +115,10 @@ exports.pipe = (args...) ->
   sources.push globsToStream globs
   new Pipe sources, mutators
 
-exports.Task = class Task
+class Task
   constructor: (@name, @body) ->
 
-exports.Pipe = class Pipe
+class Pipe
   constructor: (@sources, @mutators) ->
   run: (cb) ->
     stream = combine @sources
@@ -126,18 +126,25 @@ exports.Pipe = class Pipe
     stream = stream.pipe step() for step in @mutators
     asyncDone (-> stream), cb
 
+runSingle = (arg) ->
+  if arg instanceof Task
+    (cb) -> asyncDone.sync arg.body, (err, result) ->
+      if result instanceof Pipe
+        result.run cb
+      else
+        cb err, result
+  else if arg instanceof Pipe
+    (cb) -> arg.run cb
+  else
+    (cb) ->
+      asyncDone.sync arg, cb
+
 exports.run = run = (args...) ->
   tasks = for arg in args
     if Array.isArray arg
-      (cb) -> async.parallel arg, cb
-    else if arg instanceof Task
-      (cb) -> asyncDone.sync arg.body, (err, result) ->
-        if result instanceof Pipe
-          result.run cb
-        else
-          cb err, result
-    else if arg instanceof Pipe
-      (cb) -> arg.run cb
-  Promise.promisify(async.series) tasks
+      (cb) -> async.parallel arg.map(runSingle), cb
+    else
+      runSingle(arg)
+  promisify(async.series) tasks
 
 exports.to = gulp.dest
