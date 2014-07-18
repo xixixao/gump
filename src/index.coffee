@@ -87,6 +87,9 @@ exports.serve = (baseDir = './') -> catchGumpErrors ->
       server: {baseDir}
       notify: false
 
+exports.setGulp = (gulpInstance) ->
+  gulp = gulpInstance
+
 tasks = {}
 
 exports.tasks = (tasksDefinition) ->
@@ -94,10 +97,11 @@ exports.tasks = (tasksDefinition) ->
   for own name, taskFn of tasksDefinition
     do (name, taskFn) ->
       tasksDefinition[name] = task = (args...) ->
-        new Task name, (done) -> taskFn args..., done
+        new Task name, taskFn.bind tasksDefinition, args...
+      task.isTask = yes
       gulp.task name, ->
         run task()
-  gulp
+  return
 
 exports.pipe = (args...) ->
   globs = []
@@ -126,13 +130,18 @@ class Pipe
     stream = stream.pipe step() for step in @mutators
     asyncDone (-> stream), cb
 
+runTask = (task) ->
+  (cb) -> asyncDone.sync task.body, (err, result) ->
+    if result instanceof Pipe
+      result.run cb
+    else
+      cb err, result
+
 runSingle = (arg) ->
+  if arg.isTask
+    runTask arg()
   if arg instanceof Task
-    (cb) -> asyncDone.sync arg.body, (err, result) ->
-      if result instanceof Pipe
-        result.run cb
-      else
-        cb err, result
+    runTask arg
   else if arg instanceof Pipe
     (cb) -> arg.run cb
   else

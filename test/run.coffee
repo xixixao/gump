@@ -3,6 +3,8 @@ chai.should()
 
 {run} = require '../bin'
 
+{testTasks} = require './util'
+
 {delay} = require 'bluebird'
 
 describe 'run', ->
@@ -33,3 +35,16 @@ describe 'run', ->
     .then ->
       value.should.eql 2
       done()
+
+  it 'should run executed Gump tasks', (done) ->
+    value = 0
+    testTasks
+      tasks:
+        a: ->
+          value = 1
+        b: ->
+          run @a()
+      run: ['b']
+      cb: ->
+        value.should.eql 1
+      done: done
